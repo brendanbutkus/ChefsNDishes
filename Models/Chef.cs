@@ -16,6 +16,8 @@ namespace ChefsNDishes.Models
         public string LastName {get;set;}
 
         [Required(ErrorMessage ="Date of Birth is required")]
+        [FutureDate]
+        [DataType(DataType.Date)]
         // [MinLength(18, ErrorMessage = "Minimum age is 18 years old")]
         public DateTime DOB {get;set;}
 
@@ -24,6 +26,32 @@ namespace ChefsNDishes.Models
         public DateTime UpdatedAt {get;set;} = DateTime.Now;
 
         public List <Dish> MyDishes {get;set;}
+
+
+        public class FutureDateAttribute : ValidationAttribute
+        {
+
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+
+            DateTime check;
+            if(value is DateTime)
+            {
+                check = (DateTime)value;
+            }
+            else
+            {
+                return new ValidationResult("Invalid");
+            }
+            if(check > DateTime.Now)
+            {
+                return new ValidationResult("Birthday must be in the past!");
+            }
+            return ValidationResult.Success;
+        }
+
+
+    }
 
 
     }
